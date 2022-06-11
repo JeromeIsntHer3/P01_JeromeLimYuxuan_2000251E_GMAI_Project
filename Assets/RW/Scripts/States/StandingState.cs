@@ -34,12 +34,13 @@ namespace RayWenderlich.Unity.StatePatternInUnity
 {
     public class StandingState : GroundedState
     {
-        private bool jump;
-        private bool crouch;
+        protected bool jump;
+        protected bool crouch;
 
         public StandingState(Character character, StateMachine stateMachine) : base(character, stateMachine)
         {
         }
+
         public override void Enter()
         {
             base.Enter();

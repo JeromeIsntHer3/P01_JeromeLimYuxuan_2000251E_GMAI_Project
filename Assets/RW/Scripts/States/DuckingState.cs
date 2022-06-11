@@ -34,8 +34,9 @@ namespace RayWenderlich.Unity.StatePatternInUnity
 {
     public class DuckingState : GroundedState
     {
-        private bool belowCeiling;
-        private bool crouchHeld;
+        public bool belowCeiling;
+        public bool crouchHeld;
+        public bool drawMelee;
 
         public DuckingState(Character character, StateMachine stateMachine) : base(character, stateMachine)
         {
@@ -48,6 +49,12 @@ namespace RayWenderlich.Unity.StatePatternInUnity
             rotationSpeed = character.CrouchRotationSpeed;
             character.ColliderSize = character.CrouchColliderHeight;
             belowCeiling = false;
+            drawMelee = false;
+            if (stateMachine.PrevState == character.drawn)
+            {
+                character.TriggerAnimation(character.sheathParam);
+                character.Invoke("SheathWeapon", 0.25f);
+            }
         }
 
         public override void Exit()
@@ -68,16 +75,18 @@ namespace RayWenderlich.Unity.StatePatternInUnity
             base.LogicUpdate();
             if (!(crouchHeld || belowCeiling))
             {
-                stateMachine.ChangeState(character.standing);
+                if (stateMachine.PrevState == character.jumping)
+                {
+                    return;
+                }
+                stateMachine.ChangeState(stateMachine.PrevState);
             }
         }
 
         public override void PhysicsUpdate()
         {
             base.PhysicsUpdate();
-            belowCeiling = character.CheckCollisionOverlap(
-        character.transform.position +
-                        Vector3.up * character.NormalColliderHeight);
+            belowCeiling = character.CheckCollisionOverlap(character.transform.position + Vector3.up * character.NormalColliderHeight);
         }
     }
 }

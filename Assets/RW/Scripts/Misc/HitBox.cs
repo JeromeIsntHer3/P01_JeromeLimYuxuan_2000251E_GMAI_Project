@@ -34,8 +34,18 @@ namespace RayWenderlich.Unity.StatePatternInUnity
 {
     public class HitBox : MonoBehaviour
     {
-        public float damage;
-
-        //Do damage
+        public int damage = 5;
+        public int playerHealth = 100;
+        public int originalHealth;
+        public bool hit = false;
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.transform.tag == "enemyweapon")
+            {
+                hit = true;
+                originalHealth = playerHealth;
+                playerHealth -= damage;
+            }
+        }
     }
 }

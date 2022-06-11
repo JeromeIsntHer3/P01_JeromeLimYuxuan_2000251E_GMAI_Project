@@ -29,6 +29,7 @@
  */
 
 using UnityEngine;
+using TMPro;
 
 namespace RayWenderlich.Unity.StatePatternInUnity
 {
@@ -36,10 +37,16 @@ namespace RayWenderlich.Unity.StatePatternInUnity
     public class Character : MonoBehaviour
     {
         #region Variables
+
+        //state variables
         public StateMachine mainMachine;
         public StandingState standing;
         public DuckingState ducking;
         public JumpingState jumping;
+        public DrawnState drawn;
+        public SheathState sheath;
+        public DamageState damage;
+        public DeadState dead;
 
 #pragma warning disable 0649
         [SerializeField]
@@ -53,11 +60,13 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         [SerializeField]
         private LayerMask whatIsGround;
         [SerializeField]
-        private Collider hitBox;
+        public Collider hitBox;
         [SerializeField]
         private Animator anim;
         [SerializeField]
         private ParticleSystem shockWave;
+        [SerializeField]
+        private TextMeshProUGUI currStateText; 
 #pragma warning restore 0649
         [SerializeField]
         private float meleeRestThreshold = 10f;
@@ -93,6 +102,12 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         public float MeleeRestThreshold => meleeRestThreshold;
         public int isMelee => Animator.StringToHash("IsMelee");
         public int crouchParam => Animator.StringToHash("Crouch");
+        public int drawParam => Animator.StringToHash("DrawMelee");
+        public int sheathParam => Animator.StringToHash("SheathMelee");
+        public int swingParam => Animator.StringToHash("SwingMelee");
+        public int isBlocking => Animator.StringToHash("IsBlocking");
+        public int hit => Animator.StringToHash("Hit");
+        public int isDead => Animator.StringToHash("IsDead");
 
         public float ColliderSize
         {
@@ -216,6 +231,16 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         #endregion
 
         #region MonoBehaviour Callbacks
+        void OnEnable()
+        {
+            ActivateHitBox();
+        }
+
+        void OnDisable()
+        {
+            DeactivateHitBox();
+        }
+
         void Start()
         {
             mainMachine = new StateMachine();
@@ -226,8 +251,15 @@ namespace RayWenderlich.Unity.StatePatternInUnity
 
             jumping = new JumpingState(this, mainMachine);
 
-            mainMachine.Initialize(standing);
-            Debug.Log(mainMachine.CurrentState);
+            drawn = new DrawnState(this, mainMachine);
+
+            sheath = new SheathState(this, mainMachine);
+
+            damage = new DamageState(this, mainMachine);
+
+            dead = new DeadState(this, mainMachine);
+
+            mainMachine.Initialize(sheath);
         }
 
         void Update()
@@ -235,13 +267,17 @@ namespace RayWenderlich.Unity.StatePatternInUnity
             mainMachine.CurrentState.HandleInput();
 
             mainMachine.CurrentState.LogicUpdate();
+
+            string[] currState = mainMachine.CurrentState.ToString().Split(".");
+            currStateText.text = currState[3];
+
+            Debug.Log(mainMachine.PrevState);
         }
 
         void FixedUpdate()
         {
             mainMachine.CurrentState.PhysicsUpdate();
         }
-
         #endregion
     }
 }

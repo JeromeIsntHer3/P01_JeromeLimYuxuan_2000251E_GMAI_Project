@@ -41,12 +41,19 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         public JumpingState(Character character, StateMachine stateMachine) : base(character, stateMachine)
         {
         }
+
         public override void Enter()
         {
             base.Enter();
             SoundManager.Instance.PlaySound(SoundManager.Instance.jumpSounds);
             grounded = false;
             Jump();
+
+            if (stateMachine.PrevState == character.drawn)
+            {
+                character.TriggerAnimation(character.sheathParam);
+                character.Invoke("SheathWeapon", 0.25f);
+            }
         }
 
         public override void LogicUpdate()
@@ -56,7 +63,7 @@ namespace RayWenderlich.Unity.StatePatternInUnity
             {
                 character.TriggerAnimation(landParam);
                 SoundManager.Instance.PlaySound(SoundManager.Instance.landing);
-                stateMachine.ChangeState(character.standing);
+                stateMachine.ChangeState(stateMachine.PrevState);
             }
         }
 
@@ -69,7 +76,6 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         private void Jump()
         {
             character.transform.Translate(Vector3.up *(character.CollisionOverlapRadius + 0.1f));
-
             character.ApplyImpulse(Vector3.up * character.JumpForce);
             character.TriggerAnimation(jumpParam);
         }
