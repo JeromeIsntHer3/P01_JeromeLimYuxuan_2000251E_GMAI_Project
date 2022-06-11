@@ -32,22 +32,32 @@ using UnityEngine;
 
 namespace RayWenderlich.Unity.StatePatternInUnity
 {
+    //The DuckingState transitions from and to the SheathState according
+    //to if the Crouch Button (Shift/Middle-Mouse Press) is pressed
     public class DuckingState : GroundedState
     {
         private bool belowCeiling;
         private bool crouchHeld;
 
-        public DuckingState(Character character, StateMachine stateMachine) : base(character, stateMachine)
-        {
-        }
+        public DuckingState(Character character, StateMachine stateMachine) : base(character, stateMachine){ }
+
         public override void Enter()
         {
             base.Enter();
+            //When The DuckingState is entered:
+            //1. Set the Crouching Anim Param to true
             character.SetAnimationBool(character.crouchParam, true);
+            //2. Set the new speed(rotation) to the PlayerData_Crouch_Variation
             speed = character.CrouchSpeed;
             rotationSpeed = character.CrouchRotationSpeed;
+            //3. Set the new collider size to the PlayerData_CrouchCollider_Height
             character.ColliderSize = character.CrouchColliderHeight;
+            //4. Set belowCeiling to false until a ceiling is detected
             belowCeiling = false;
+            //5. Check if the PrevState was Drawn and have the Sheath Anim Param
+            //to be triggered and Invoke the character.SheathWeapon function to be delayed
+            //so that the animation lines up with the weapon appearing on the players
+            //back
             if (stateMachine.PrevState == character.drawn)
             {
                 character.TriggerAnimation(character.sheathParam);
@@ -58,25 +68,29 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         public override void Exit()
         {
             base.Exit();
+            //When transitioning out from the DuckingState:
+            //1. Set the Crouch Anim Param to false to stop the animation
             character.SetAnimationBool(character.crouchParam, false);
+            //2. Set the collider size to the original collider size
             character.ColliderSize = character.NormalColliderHeight;
         }
 
         public override void HandleInput()
         {
             base.HandleInput();
+            //Set crouchHeld to true if Shift/Middle-Mouse pressed
             crouchHeld = Input.GetButton("Fire3");
         }
 
         public override void LogicUpdate()
         {
             base.LogicUpdate();
+            //If Shift/Middle-Mouse is no longer being press and the character
+            //is not a collidable ceiling, transition back to the PrevState
+            //if it is not the jumping state
             if (!(crouchHeld || belowCeiling))
             {
-                if (stateMachine.PrevState == character.jumping)
-                {
-                    return;
-                }
+                if (stateMachine.PrevState == character.jumping){return;}
                 stateMachine.ChangeState(stateMachine.PrevState);
             }
         }
@@ -84,6 +98,8 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         public override void PhysicsUpdate()
         {
             base.PhysicsUpdate();
+            //Set the beloweCeiling bool to tree if the collider of the character meets/overlaps
+            //another collider above the character
             belowCeiling = character.CheckCollisionOverlap(character.transform.position + Vector3.up * character.NormalColliderHeight);
         }
     }

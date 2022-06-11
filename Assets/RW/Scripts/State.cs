@@ -45,9 +45,7 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         //which state we want the StateMachine to be in
         protected StateMachine stateMachine;
 
-
-        protected bool drawn;
-
+        
         protected State(Character character, StateMachine stateMachine)
         {
             this.character = character;

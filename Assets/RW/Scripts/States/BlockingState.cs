@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace RayWenderlich.Unity.StatePatternInUnity
 {
+    //The BlockingState transition from SheathState when Right-Click is held
     public class BlockingState : State
     {
         private bool blockHeld;
@@ -12,6 +13,8 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         public override void Enter()
         {
             base.Enter();
+            //When the BlockingState is entered turn off the hitbox so that the player
+            //will not be damaged and also set the Blocking Parameter to true
             character.DeactivateHitBox();
             character.SetAnimationBool(character.isBlocking, true);
         }
@@ -19,18 +22,17 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         public override void HandleInput()
         {
             base.HandleInput();
+            //Check if the player is holding Right-Click
             blockHeld = Input.GetButton("Fire2");
         }
 
         public override void LogicUpdate()
         {
             base.LogicUpdate();
+            //If they player let's go of Right-Click, have the BlockingState transition
+            //to the previous State.
             if (!blockHeld)
             {
-                if (stateMachine.PrevState == character.jumping)
-                {
-                    return;
-                }
                 stateMachine.ChangeState(stateMachine.PrevState);
             }
         }
@@ -38,6 +40,10 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         public override void Exit()
         {
             base.Exit();
+            //When BlockingState is transitioning back to the PrevState,
+            //re-enable the hitbox and set the Blocking Param to false to
+            //stop the animation
+            character.ActivateHitBox();
             character.SetAnimationBool(character.isBlocking, false);
         }
     }

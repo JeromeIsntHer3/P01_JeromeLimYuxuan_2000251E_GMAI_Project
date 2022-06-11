@@ -34,16 +34,20 @@ namespace RayWenderlich.Unity.StatePatternInUnity
 {
     public class HitBox : MonoBehaviour
     {
+        //The amount of damage to be dealt to the charcter
         public int damage = 5;
+        //The amount of health would have actively
         public int playerHealth = 100;
-        public int originalHealth;
+        //The amount of health before the player got hit
+        public int prevhealth;
+        //check if player got hit
         public bool hit = false;
         private void OnTriggerEnter(Collider other)
         {
             if (other.transform.tag == "enemyweapon")
             {
                 hit = true;
-                originalHealth = playerHealth;
+                prevhealth = playerHealth;
                 playerHealth -= damage;
             }
         }

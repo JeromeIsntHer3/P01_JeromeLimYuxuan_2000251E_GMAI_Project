@@ -30,15 +30,25 @@
 
 namespace RayWenderlich.Unity.StatePatternInUnity
 {
+    //The StateMachine is taken in by the character to go through the different states
     public class StateMachine
     {
+        //CurrentState derives from the State Class
+        //that holds the state that is actively running
         public State CurrentState { get; private set; }
+        //PrevState derives from the State Class that
+        //holds the state that was running previously
         public State PrevState { get; private set; }
+        //The Initialize Function takes the state the character
+        //should be in when the game starts
         public void Initialize(State startingState) 
         { 
             CurrentState = startingState;
             CurrentState.Enter();
         }
+        //The ChangeState function sets the CurrentState as the PrevState
+        //and then Exits from that CurrentState. After which the State within the
+        //param will be set as the CurrentState and then that "newState" will be entered
         public void ChangeState(State newState) 
         {
             PrevState = CurrentState;

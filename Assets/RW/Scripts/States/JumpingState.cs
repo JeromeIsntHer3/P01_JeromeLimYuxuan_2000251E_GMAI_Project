@@ -32,23 +32,27 @@ using UnityEngine;
 
 namespace RayWenderlich.Unity.StatePatternInUnity
 {
+    //JumpingState transtions from and to SheathState and DrawnState
+    //according to if the player wants to chat
+    
     public class JumpingState : State
     {
         private bool grounded;
         private int jumpParam = Animator.StringToHash("Jump");
         private int landParam = Animator.StringToHash("Land");
 
-        public JumpingState(Character character, StateMachine stateMachine) : base(character, stateMachine)
-        {
-        }
+        public JumpingState(Character character, StateMachine stateMachine) : base(character, stateMachine){ }
 
         public override void Enter()
         {
             base.Enter();
+            //Take in an Instance of the SoundManager 
             SoundManager.Instance.PlaySound(SoundManager.Instance.jumpSounds);
             grounded = false;
+            //Activate the Jump function
             Jump();
-
+            //If the PrevState is drawn, Invoke the SheathWeapon from the character
+            //with delay to get the weapon to transform in the similar timing
             if (stateMachine.PrevState == character.drawn)
             {
                 character.TriggerAnimation(character.sheathParam);
@@ -59,6 +63,10 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         public override void LogicUpdate()
         {
             base.LogicUpdate();
+            //If player is grounded:
+            //1. Trigger the Land Param for the landing animation
+            //2. Use the SoundManager Instance to play the sound
+            //3. Transition to the PrevState
             if (grounded)
             {
                 character.TriggerAnimation(landParam);
@@ -70,13 +78,17 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         public override void PhysicsUpdate()
         {
             base.PhysicsUpdate();
+            //Check if the character's collision overlaps the ground collision
             grounded = character.CheckCollisionOverlap(character.transform.position);
         }
 
         private void Jump()
         {
+            //Send the character upwards
             character.transform.Translate(Vector3.up *(character.CollisionOverlapRadius + 0.1f));
+            //Add the upwards force according to the player data jump force
             character.ApplyImpulse(Vector3.up * character.JumpForce);
+            //Trigger the Jump Param to play the animation
             character.TriggerAnimation(jumpParam);
         }
     }

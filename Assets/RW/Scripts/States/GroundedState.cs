@@ -71,7 +71,7 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         public override void PhysicsUpdate()
         {
             base.PhysicsUpdate();
-            if (hb.playerHealth < hb.originalHealth && hb.hit)
+            if (hb.playerHealth < hb.prevhealth && hb.hit)
             {
                 stateMachine.ChangeState(character.damage);
             }

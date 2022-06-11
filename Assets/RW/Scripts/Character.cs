@@ -103,6 +103,7 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         public float MeleeRestThreshold => meleeRestThreshold;
         public int isMelee => Animator.StringToHash("IsMelee");
         public int crouchParam => Animator.StringToHash("Crouch");
+        //Using Properties to get the int Param from the Animator of this character
         public int drawParam => Animator.StringToHash("DrawMelee");
         public int sheathParam => Animator.StringToHash("SheathMelee");
         public int swingParam => Animator.StringToHash("SwingMelee");
@@ -110,6 +111,7 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         public int hit => Animator.StringToHash("Hit");
         public int isDead => Animator.StringToHash("IsDead");
 
+        //Find the capsulecolluder component height and set the new values
         public float ColliderSize
         {
             get => GetComponent<CapsuleCollider>().height;
