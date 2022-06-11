@@ -8,6 +8,7 @@ namespace RayWenderlich.Unity.StatePatternInUnity
     {
         private bool sheathMelee;
         private bool attack;
+        private bool blocking;
 
         public DrawnState(Character character, StateMachine stateMachine) : base(character, stateMachine)
         {
@@ -19,10 +20,13 @@ namespace RayWenderlich.Unity.StatePatternInUnity
             sheathMelee = false;
             attack = false;
             canAttack = true;
-
-            character.Unequip();
-            character.TriggerAnimation(character.drawParam);
-            character.Equip(character.MeleeWeapon);
+            blocking = false;
+            if(stateMachine.PrevState != character.blocking)
+            {
+                character.Unequip();
+                character.TriggerAnimation(character.drawParam);
+                character.Equip(character.MeleeWeapon);
+            }
         }
 
         public override void HandleInput()
@@ -30,6 +34,7 @@ namespace RayWenderlich.Unity.StatePatternInUnity
             base.HandleInput();
             sheathMelee = Input.GetKeyDown(KeyCode.Q);
             attack = Input.GetButtonDown("Fire1");
+            blocking = Input.GetButtonDown("Fire2");
         }
 
         public override void LogicUpdate()
@@ -42,6 +47,10 @@ namespace RayWenderlich.Unity.StatePatternInUnity
             else if (attack && canAttack)
             {
                 character.TriggerAnimation(character.swingParam);
+            }
+            if (blocking)
+            {
+                stateMachine.ChangeState(character.blocking);
             }
         }
     }

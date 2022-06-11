@@ -47,6 +47,7 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         public SheathState sheath;
         public DamageState damage;
         public DeadState dead;
+        public BlockingState blocking;
 
 #pragma warning disable 0649
         [SerializeField]
@@ -258,6 +259,8 @@ namespace RayWenderlich.Unity.StatePatternInUnity
             damage = new DamageState(this, mainMachine);
 
             dead = new DeadState(this, mainMachine);
+
+            blocking = new BlockingState(this, mainMachine);
 
             mainMachine.Initialize(sheath);
         }

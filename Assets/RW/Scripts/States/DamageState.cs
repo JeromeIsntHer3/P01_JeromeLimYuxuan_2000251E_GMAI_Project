@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace RayWenderlich.Unity.StatePatternInUnity
 {
-    public class DamageState : StandingState
+    public class DamageState : GroundedState
     {
         private bool hit = false;
         private bool dead;
@@ -18,7 +18,6 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         {
             base.Enter();
             currTime = stunTimer;
-            speed = rotationSpeed = 0.0f;
             hit = true;
             dead = false;
             canAttack = false;

@@ -7,7 +7,6 @@ namespace RayWenderlich.Unity.StatePatternInUnity
     public class SheathState : StandingState
     {
         private bool drawMelee;
-        private bool blocking;
 
         public SheathState(Character character, StateMachine stateMachine) : base(character, stateMachine) { }
 
@@ -15,7 +14,6 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         {
             base.Enter();
             drawMelee = false;
-            blocking = false;
             if (stateMachine.PrevState == character.drawn)
             {
                 character.TriggerAnimation(character.sheathParam);
@@ -27,7 +25,6 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         {
             base.HandleInput();
             drawMelee = Input.GetKeyDown(KeyCode.Q);
-            blocking = Input.GetKey(KeyCode.Mouse1);
         }
 
         public override void LogicUpdate()
@@ -36,14 +33,6 @@ namespace RayWenderlich.Unity.StatePatternInUnity
             if (drawMelee)
             {
                 stateMachine.ChangeState(character.drawn);
-            }
-            if (blocking)
-            {
-                character.SetAnimationBool(character.isBlocking, true); 
-            }
-            else
-            {
-                character.SetAnimationBool(character.isBlocking, false);
             }
         }
 

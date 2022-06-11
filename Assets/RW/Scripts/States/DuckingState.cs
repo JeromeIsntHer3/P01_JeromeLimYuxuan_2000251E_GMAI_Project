@@ -34,9 +34,8 @@ namespace RayWenderlich.Unity.StatePatternInUnity
 {
     public class DuckingState : GroundedState
     {
-        public bool belowCeiling;
-        public bool crouchHeld;
-        public bool drawMelee;
+        private bool belowCeiling;
+        private bool crouchHeld;
 
         public DuckingState(Character character, StateMachine stateMachine) : base(character, stateMachine)
         {
@@ -49,7 +48,6 @@ namespace RayWenderlich.Unity.StatePatternInUnity
             rotationSpeed = character.CrouchRotationSpeed;
             character.ColliderSize = character.CrouchColliderHeight;
             belowCeiling = false;
-            drawMelee = false;
             if (stateMachine.PrevState == character.drawn)
             {
                 character.TriggerAnimation(character.sheathParam);
