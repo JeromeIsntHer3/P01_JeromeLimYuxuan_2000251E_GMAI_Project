@@ -34,8 +34,6 @@ namespace RayWenderlich.Unity.StatePatternInUnity
 {
     public class GroundedState : PlayerState
     {
-        public HitBox hb;
-
         protected float speed;
         protected float rotationSpeed;
         protected bool canAttack;
@@ -52,8 +50,6 @@ namespace RayWenderlich.Unity.StatePatternInUnity
             base.Enter();
             DisplayOnUI(UIManager.Alignment.Left);
             horizontalInput = verticalInput = 0.0f;
-            hb = character.hitBox.GetComponent<HitBox>();
-            hb.hit = false;
         }
 
         public override void Exit()
@@ -72,7 +68,7 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         public override void PhysicsUpdate()
         {
             base.PhysicsUpdate();
-            if (hb.playerHealth < hb.prevhealth && hb.hit)
+            if (character.currHealth < character.prevHealth && character.isHit)
             {
                 stateMachine.ChangeState(character.damage);
             }

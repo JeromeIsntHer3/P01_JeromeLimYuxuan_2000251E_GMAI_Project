@@ -9,7 +9,6 @@ namespace RayWenderlich.Unity.StatePatternInUnity
 
     public class DamageState : GroundedState
     {
-        private bool hit = false;
         private bool dead;
 
         private float stunTimer = 1f;
@@ -26,11 +25,11 @@ namespace RayWenderlich.Unity.StatePatternInUnity
             currTime = stunTimer;
             //2. Set the character being hit,dead and |canAttack to false to prevent
             //the player from attacking 
-            hit = true;
             dead = false;
             canAttack = false;
+            character.isHit = false;
             //3. If the character health is lesser or equal to 0, set dead to true 
-            if (hb.playerHealth <= 0)
+            if (character.currHealth <= 0)
             {
                 dead = true;
             }
@@ -52,7 +51,7 @@ namespace RayWenderlich.Unity.StatePatternInUnity
             //2. Check DamageState entry accurately works with hit being set as true
             // and timer finishing and the character not being in DeadState, transition back
             //to the PrevState
-            if (hit && currTime <= 0 && !dead)
+            if (currTime <= 0 && !dead)
             {
                 stateMachine.ChangeState(stateMachine.PrevState);
             }

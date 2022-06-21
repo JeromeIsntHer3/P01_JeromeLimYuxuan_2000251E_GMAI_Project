@@ -64,6 +64,24 @@ namespace RayWenderlich.Unity.StatePatternInUnity
 
         public void Display(PlayerState enteredState, Alignment alignment)
         {
+               
+            var name = enteredState.ToString();
+            name = name.Remove(name.IndexOf(textToTrim), textToTrim.Length);
+            name = name.Remove(name.IndexOf("State"), 5);
+
+            if (alignment == Alignment.Left)
+            {
+                leftText.text = name;
+            }
+            else
+            {
+                rightText.text = name;
+            }
+        }
+
+        public void DisplayN(NPCState enteredState, Alignment alignment)
+        {
+
             var name = enteredState.ToString();
             name = name.Remove(name.IndexOf(textToTrim), textToTrim.Length);
             name = name.Remove(name.IndexOf("State"), 5);

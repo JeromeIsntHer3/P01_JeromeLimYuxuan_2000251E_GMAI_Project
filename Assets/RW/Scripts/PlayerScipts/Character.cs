@@ -29,12 +29,11 @@
  */
 
 using UnityEngine;
-using TMPro;
 
 namespace RayWenderlich.Unity.StatePatternInUnity
 {
     [RequireComponent(typeof(CapsuleCollider))]
-    public class Character : MonoBehaviour
+    public class Character : MonoBehaviour,IDamageable
     {
         #region Variables
 
@@ -76,6 +75,10 @@ namespace RayWenderlich.Unity.StatePatternInUnity
 
         private GameObject currentWeapon;
         private Quaternion currentRotation;
+        //Health Related Variables
+        public float currHealth;
+        public float prevHealth;
+        public bool isHit;
         private int horizonalMoveParam = Animator.StringToHash("H_Speed");
         private int verticalMoveParam = Animator.StringToHash("V_Speed");
         private int shootParam = Animator.StringToHash("Shoot");
@@ -96,6 +99,7 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         public GameObject MeleeWeapon => data.meleeWeapon;
         public GameObject ShootableWeapon => data.staticShootable;
         public float DiveCooldownTimer => data.diveCooldownTimer;
+        public float Health => data.Health;
         public float CollisionOverlapRadius => collisionOverlapRadius;
         public float DiveThreshold => diveThreshold;
         public float MeleeRestThreshold => meleeRestThreshold;
@@ -217,6 +221,17 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         {
             hitBox.enabled = false;
         }
+        public void ActivateSwordHitBox()
+        {
+            currentWeapon.GetComponent<CapsuleCollider>().enabled = true;
+            Debug.Log("Hitbox activated");
+        }
+
+        public void DisableSwordHitBox()
+        {
+            currentWeapon.GetComponent<CapsuleCollider>().enabled = false;
+            Debug.Log("HitBox Deactivated");
+        }
 
         private void ParentCurrentWeapon(Transform parent)
         {
@@ -228,6 +243,13 @@ namespace RayWenderlich.Unity.StatePatternInUnity
             currentWeapon.transform.SetParent(parent);
             currentWeapon.transform.localPosition = Vector3.zero;
             currentWeapon.transform.localRotation = Quaternion.identity;
+        }
+
+        public void Damage()
+        {
+            currHealth = prevHealth = Health;
+            currHealth -= 25f;
+            isHit = true;
         }
         #endregion
 
@@ -263,6 +285,9 @@ namespace RayWenderlich.Unity.StatePatternInUnity
             blocking = new BlockingState(this, mainMachine);
 
             mainMachine.Initialize(sheath);
+
+            Equip(MeleeWeapon);
+            SheathWeapon();
         }
 
         void Update()
@@ -270,8 +295,8 @@ namespace RayWenderlich.Unity.StatePatternInUnity
             mainMachine.CurrentState.HandleInput();
 
             mainMachine.CurrentState.LogicUpdate();
-
-            Debug.Log(mainMachine.PrevState);
+            Debug.Log("Current State" + mainMachine.CurrentState);
+            Debug.Log("Previous State" + mainMachine.PrevState);
         }
 
         void FixedUpdate()
