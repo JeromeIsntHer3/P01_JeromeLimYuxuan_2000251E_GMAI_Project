@@ -4,10 +4,10 @@ using UnityEngine;
 
 namespace RayWenderlich.Unity.StatePatternInUnity
 {
-    public class IdleState : NPCState
+    public class IdleState : GeneralNPCState
     {
         private bool timerOver;
-        private float timerTime = 2f;
+        private float timerTime;
         private float currTime;
         private float seekRange = 10f;
 
@@ -18,6 +18,7 @@ namespace RayWenderlich.Unity.StatePatternInUnity
             base.Enter();
             timerOver = false;
             npc.agent.ResetPath();
+            timerTime = Random.Range(4f, 20f);
             currTime = timerTime;
         }
         public override void LogicUpdate()

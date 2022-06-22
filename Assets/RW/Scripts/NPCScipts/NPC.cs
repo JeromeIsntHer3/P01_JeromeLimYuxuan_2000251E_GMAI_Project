@@ -4,7 +4,7 @@ using UnityEngine.AI;
 namespace RayWenderlich.Unity.StatePatternInUnity
 {
     [RequireComponent(typeof(CapsuleCollider))]
-    public class NPC : MonoBehaviour,IDamageable
+    public class NPC : MonoBehaviour
     {
         #region Variables
 
@@ -31,11 +31,15 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         [SerializeField]
         private Transform handTransform;
         [SerializeField]
-        private CharacterData data; //create SO for npc
+        private CharacterData data;
         [SerializeField]
-        private Collider hitBox;
+        private Collider hitBox; //change back private later
+        [SerializeField]
+        private BoxCollider damageBox;
         [SerializeField]
         private Animator anim;
+        [SerializeField]
+        private float damageTaken;
 
         private GameObject currentWeapon;
         private Quaternion currentRotation;
@@ -129,14 +133,12 @@ namespace RayWenderlich.Unity.StatePatternInUnity
 
         public void ActivateSwordHitBox()
         {
-            currentWeapon.GetComponent<CapsuleCollider>().enabled = true;
-            Debug.Log("Hitbox activated");
+            damageBox.enabled = true;
         }
 
         public void DisableSwordHitBox()
         {
-            currentWeapon.GetComponent<CapsuleCollider>().enabled = false;
-            Debug.Log("HitBox Deactivated");
+            damageBox.enabled = false;
         }
 
         private void ParentCurrentWeapon(Transform parent)
@@ -158,10 +160,13 @@ namespace RayWenderlich.Unity.StatePatternInUnity
 
         public void Damage()
         {
-            currHealth = prevHealth = Health;
-            currHealth -= 50f;
-            isHit = true;
-            Debug.Log("hit");
+            if (currHealth > 0)
+            {
+                prevHealth = currHealth;
+                currHealth -= damageTaken;
+                isHit = true;
+                Debug.Log("Character is hit");
+            }
         }
         #endregion
 
@@ -179,6 +184,7 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         void Awake()
         {
             agent = GetComponent<NavMeshAgent>();
+            currHealth = Health;
         }
 
         void Start()

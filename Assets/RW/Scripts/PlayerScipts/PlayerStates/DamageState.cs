@@ -38,6 +38,7 @@ namespace RayWenderlich.Unity.StatePatternInUnity
             if (!dead)
             {
                 character.TriggerAnimation(character.hit);
+                Debug.Log("ugasdhbkasd");
             }
         }
         public override void LogicUpdate()
@@ -53,7 +54,7 @@ namespace RayWenderlich.Unity.StatePatternInUnity
             //to the PrevState
             if (currTime <= 0 && !dead)
             {
-                stateMachine.ChangeState(stateMachine.PrevState);
+                stateMachine.ChangeState(character.drawn);
             }
             //3. If dead is true (character health lesser or equal to 0) transition to DeadState
             else if (dead)

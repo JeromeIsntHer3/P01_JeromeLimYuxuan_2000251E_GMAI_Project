@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 namespace RayWenderlich.Unity.StatePatternInUnity
 {
-    public class PatrolState : NPCState
+    public class PatrolState : GeneralNPCState
     {
         private float walkRadius = 20;
         private float seekRange = 10f;

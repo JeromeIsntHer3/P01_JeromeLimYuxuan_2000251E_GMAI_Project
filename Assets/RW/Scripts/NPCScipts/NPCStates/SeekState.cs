@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace RayWenderlich.Unity.StatePatternInUnity
 {
-    public class SeekState : NPCState
+    public class SeekState : GeneralNPCState
     {
-        private float speed = 5f;
+        private float speed = 2f;
         public SeekState(NPC npc, NPCStateMachine stateMachine) : base(npc, stateMachine) { }
 
         public override void Enter()
@@ -24,6 +24,11 @@ namespace RayWenderlich.Unity.StatePatternInUnity
             {
                 npc.agent.ResetPath();
                 stateMachine.ChangeState(npc.attack);
+            }
+            if(npc.PlayerNPCDist() > 10f)
+            {
+                npc.agent.ResetPath();
+                stateMachine.ChangeState(npc.idle);
             }
         }
     }

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Sword : MonoBehaviour
+public class DamageBox : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
     {

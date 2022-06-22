@@ -33,7 +33,7 @@ using UnityEngine;
 namespace RayWenderlich.Unity.StatePatternInUnity
 {
     [RequireComponent(typeof(CapsuleCollider))]
-    public class Character : MonoBehaviour,IDamageable
+    public class Character : MonoBehaviour
     {
         #region Variables
 
@@ -60,9 +60,13 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         [SerializeField]
         private LayerMask whatIsGround;
         [SerializeField]
-        public Collider hitBox;
+        private Collider hitBox;
+        [SerializeField]
+        private BoxCollider damageBox;
         [SerializeField]
         private Animator anim;
+        [SerializeField]
+        private float damageTaken;
         [SerializeField]
         private ParticleSystem shockWave;
 #pragma warning restore 0649
@@ -223,14 +227,12 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         }
         public void ActivateSwordHitBox()
         {
-            currentWeapon.GetComponent<CapsuleCollider>().enabled = true;
-            Debug.Log("Hitbox activated");
+            damageBox.enabled = true;
         }
 
         public void DisableSwordHitBox()
         {
-            currentWeapon.GetComponent<CapsuleCollider>().enabled = false;
-            Debug.Log("HitBox Deactivated");
+            damageBox.enabled = false;
         }
 
         private void ParentCurrentWeapon(Transform parent)
@@ -247,9 +249,13 @@ namespace RayWenderlich.Unity.StatePatternInUnity
 
         public void Damage()
         {
-            currHealth = prevHealth = Health;
-            currHealth -= 25f;
-            isHit = true;
+            if (currHealth > 0)
+            {
+                prevHealth = currHealth;
+                currHealth -= damageTaken;
+                isHit = true;
+                Debug.Log("Character is hit");
+            }
         }
         #endregion
 
@@ -262,6 +268,11 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         void OnDisable()
         {
             DeactivateHitBox();
+        }
+
+        void Awake()
+        {
+            currHealth =  Health;
         }
 
         void Start()
@@ -295,8 +306,6 @@ namespace RayWenderlich.Unity.StatePatternInUnity
             mainMachine.CurrentState.HandleInput();
 
             mainMachine.CurrentState.LogicUpdate();
-            Debug.Log("Current State" + mainMachine.CurrentState);
-            Debug.Log("Previous State" + mainMachine.PrevState);
         }
 
         void FixedUpdate()

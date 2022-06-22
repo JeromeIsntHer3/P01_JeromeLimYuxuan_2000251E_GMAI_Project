@@ -28,3 +28,4 @@ MonoBehaviour:
   diveForce: 30
   bulletInitialSpeed: 20
   diveCooldownTimer: 2.1
+  Health: 100
