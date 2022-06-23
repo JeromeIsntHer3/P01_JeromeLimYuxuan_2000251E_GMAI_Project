@@ -16,6 +16,7 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         {
             character.ActivateSwordHitBox();
         }
+
         public void SwordHitBoxDisable()
         {
             character.DisableSwordHitBox();

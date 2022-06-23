@@ -7,11 +7,13 @@ namespace RayWenderlich.Unity.StatePatternInUnity
     {
         Character character;
         NPC npc;
+        NPC_Creature creature;
 
         public enum Type
         {
             Charater,
-            NPC
+            NPC,
+            Creature
         }
 
         public Type characterType;
@@ -26,6 +28,9 @@ namespace RayWenderlich.Unity.StatePatternInUnity
                 case Type.NPC:
                     npc = GetComponentInParent<NPC>();
                     break;
+                case Type.Creature:
+                    creature = GetComponentInParent<NPC_Creature>();
+                    break;
                 default:
                     break;
             }
@@ -37,9 +42,13 @@ namespace RayWenderlich.Unity.StatePatternInUnity
             {
                 character.Damage();
             }
-            if(npc != null)
+            else if(npc != null)
             {
                 npc.Damage();
+            }
+            else if(creature != null)
+            {
+                creature.Damage();
             }
         }
     }

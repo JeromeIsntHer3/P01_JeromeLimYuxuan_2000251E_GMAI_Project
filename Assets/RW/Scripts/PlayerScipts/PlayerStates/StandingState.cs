@@ -32,12 +32,8 @@ using UnityEngine;
 
 namespace RayWenderlich.Unity.StatePatternInUnity
 {
-    //StandingState acts as the parent class of SheathState and DrawnState
-    //to know the speed the character should be at.
     public class StandingState : GroundedState
     {
-        //Fields set as protected to allow States that derive from it
-        //to set the new values for the variables
         protected bool jump;
         protected bool crouch;
 
@@ -47,12 +43,8 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         {
             base.Enter();
             DisplayOnUI(UIManager.Alignment.Left);
-            //When the StandingState is entered:
-            //1. Set the character speed(rotation) to the player data variation
             speed = character.MovementSpeed;
             rotationSpeed = character.RotationSpeed;
-            //2. Set crouch and jump to false as will take in the player
-            //input in the HandleInput function
             crouch = false;
             jump = false;
         }
@@ -60,21 +52,17 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         public override void HandleInput()
         {
             base.HandleInput();
-            //Check if the player wants to crouch with Shift/Middle-Mouse click
             crouch = Input.GetButtonDown("Fire3");
-            //Check if the player wants to crouch with space bar click
             jump = Input.GetButtonDown("Jump");
         }
 
         public override void LogicUpdate()
         {
             base.LogicUpdate();
-            //If the player input they want to crouch transition to DuckingState
             if (crouch)
             {
                 stateMachine.ChangeState(character.ducking);
             }
-            //If the player input they want to jump transition to JumpState
             else if (jump)
             {
                 stateMachine.ChangeState(character.jumping);

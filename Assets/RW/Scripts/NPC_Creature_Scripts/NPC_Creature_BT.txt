@@ -1,0 +1,34 @@
+tree("Root")
+	repeat
+		fallback
+			tree("IsDead")
+			tree("Checking Targets")
+			tree("Combat")
+			tree("Move To Target")
+
+tree("IsDead")
+	sequence
+		IsDead
+
+tree("Checking Targets")
+	fallback
+		CheckTargets
+		CheckNearestTarget
+		
+
+tree("Combat")
+	fallback
+		sequence
+			IsHit
+			Damaged
+		sequence
+			not IsHit
+			CloseToAttack
+			Attack
+
+
+tree("Move To Target")
+	sequence
+		IsTargetClose
+		not	CloseToAttack
+		MoveToTarget		

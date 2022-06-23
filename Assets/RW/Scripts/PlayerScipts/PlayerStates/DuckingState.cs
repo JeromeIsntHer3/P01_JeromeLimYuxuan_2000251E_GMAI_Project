@@ -32,8 +32,6 @@ using UnityEngine;
 
 namespace RayWenderlich.Unity.StatePatternInUnity
 {
-    //The DuckingState transitions from and to the SheathState according
-    //to if the Crouch Button (Shift/Middle-Mouse Press) is pressed
     public class DuckingState : GroundedState
     {
         private bool belowCeiling;
@@ -45,41 +43,29 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         {
             base.Enter();
             DisplayOnUI(UIManager.Alignment.Left);
-            //When The DuckingState is entered:
-            //1. Set the Crouching Anim Param to true
             character.SetAnimationBool(character.crouchParam, true);
-            //2. Set the new speed(rotation) to the PlayerData_Crouch_Variation
             speed = character.CrouchSpeed;
             rotationSpeed = character.CrouchRotationSpeed;
-            //3. Set the new collider size to the PlayerData_CrouchCollider_Height
             character.ColliderSize = character.CrouchColliderHeight;
-            //4. Set belowCeiling to false until a ceiling is detected
             belowCeiling = false;
         }
 
         public override void Exit()
         {
             base.Exit();
-            //When transitioning out from the DuckingState:
-            //1. Set the Crouch Anim Param to false to stop the animation
             character.SetAnimationBool(character.crouchParam, false);
-            //2. Set the collider size to the original collider size
             character.ColliderSize = character.NormalColliderHeight;
         }
 
         public override void HandleInput()
         {
             base.HandleInput();
-            //Set crouchHeld to true if Shift/Middle-Mouse pressed
             crouchHeld = Input.GetButton("Fire3");
         }
 
         public override void LogicUpdate()
         {
             base.LogicUpdate();
-            //If Shift/Middle-Mouse is no longer being press and the character
-            //is not a collidable ceiling, transition back to the PrevState
-            //if it is not the jumping state
             if (!(crouchHeld || belowCeiling))
             {
                 stateMachine.ChangeState(stateMachine.PrevState);
@@ -89,8 +75,6 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         public override void PhysicsUpdate()
         {
             base.PhysicsUpdate();
-            //Set the beloweCeiling bool to tree if the collider of the character meets/overlaps
-            //another collider above the character
             belowCeiling = character.CheckCollisionOverlap(character.transform.position + Vector3.up * character.NormalColliderHeight);
         }
     }

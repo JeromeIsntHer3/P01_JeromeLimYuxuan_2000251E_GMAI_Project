@@ -40,6 +40,7 @@ namespace RayWenderlich.Unity.StatePatternInUnity
 
         private float horizontalInput;
         private float verticalInput;
+        private FunctionTimer ft;
 
         public GroundedState(Character character, PlayerStateMachine stateMachine) : base(character, stateMachine)
         {
@@ -50,6 +51,7 @@ namespace RayWenderlich.Unity.StatePatternInUnity
             base.Enter();
             DisplayOnUI(UIManager.Alignment.Left);
             horizontalInput = verticalInput = 0.0f;
+            ft = new FunctionTimer(CanBeDamaged, 3f);
         }
 
         public override void Exit()
@@ -65,14 +67,25 @@ namespace RayWenderlich.Unity.StatePatternInUnity
             horizontalInput = Input.GetAxis("Horizontal");
         }
 
-        public override void PhysicsUpdate()
+        public override void LogicUpdate()
         {
-            base.PhysicsUpdate();
+            base.LogicUpdate();
             if (character.currHealth < character.prevHealth && character.isHit)
             {
                 stateMachine.ChangeState(character.damage);
             }
+            ft.Update();
+        }
+
+        public override void PhysicsUpdate()
+        {
+            base.PhysicsUpdate();
             character.Move(verticalInput * speed, horizontalInput * rotationSpeed);
+        }
+
+        void CanBeDamaged()
+        {
+            character.canBeDamaged = true;
         }
     }
 }

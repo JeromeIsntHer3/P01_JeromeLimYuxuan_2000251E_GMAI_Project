@@ -37,7 +37,10 @@ namespace RayWenderlich.Unity.StatePatternInUnity
     {
         #region Variables
 
-        //state variables
+        //Misc Variables
+        public FunctionTimer timer;
+
+        //State Machine Variables
         public PlayerStateMachine mainMachine;
         public StandingState standing;
         public DuckingState ducking;
@@ -82,7 +85,10 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         //Health Related Variables
         public float currHealth;
         public float prevHealth;
+        [HideInInspector]
         public bool isHit;
+        [HideInInspector]
+        public bool canBeDamaged;
         private int horizonalMoveParam = Animator.StringToHash("H_Speed");
         private int verticalMoveParam = Animator.StringToHash("V_Speed");
         private int shootParam = Animator.StringToHash("Shoot");
@@ -249,14 +255,19 @@ namespace RayWenderlich.Unity.StatePatternInUnity
 
         public void Damage()
         {
-            if (currHealth > 0)
+            if (currHealth > 0 && canBeDamaged)
             {
                 prevHealth = currHealth;
                 currHealth -= damageTaken;
+                canBeDamaged = false;
                 isHit = true;
-                Debug.Log("Character is hit");
+            }
+            else if (currHealth < 0)
+            {
+                currHealth = 0;
             }
         }
+
         #endregion
 
         #region MonoBehaviour Callbacks
@@ -273,6 +284,7 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         void Awake()
         {
             currHealth =  Health;
+            canBeDamaged = true;
         }
 
         void Start()
