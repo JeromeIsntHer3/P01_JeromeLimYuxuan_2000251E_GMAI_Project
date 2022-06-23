@@ -54,104 +54,171 @@ namespace RayWenderlich.Unity.StatePatternInUnity
             currHealth = 50f;
         }
 
+        private void Update()
+        {
+            Debug.DrawLine(go.transform.position,transform.position);
+        }
+
         #region Tasks
-        [Task]
-        public bool CheckTargets()                                  //To detect and find all the objects with string tag
-        {                                                           //which should be set to "Characters" in order to
-            objInRange = GameObject.FindGameObjectsWithTag(objtag); //take in and hold the gameObjects within the objInRange
-            if (objInRange != null)                                 //array which are the gameobjects which the creature can
-            {                                                       //target.
-                return false;                                       //This task returns false so that it move on to the next
-            }                                                       //tree but still gets ran every time the BT is repeated
-            return false;                                           //so that if new targets are spawned the creature can target
-        }                                                           //them if they are close enough
 
         [Task]
-        public void MoveToTarget()                                                         //Animation floats are set according
-        {                                                                                  //to the velocty of the agent so that
-            anim.SetFloat(Move_Y, agent.velocity.magnitude, smoothBlend,Time.deltaTime);   //the animation fits with the speed
-            anim.SetFloat(Move_X, agent.angularSpeed, smoothBlend,Time.deltaTime);         //of the creature.
-            agent.SetDestination(closestGO.transform.position);                            //The agent will move to the closest
-            Task.current.Succeed();                                                        //target when this task is ran and
-        }                                                                                  //it will always succeed as there should
-                                                                                           //be target with the way the BT is setup
+        //To detect and find all the objects with string tag
+        //which should be set to "Characters" in order to
+        //take in and hold the gameObjects within the objInRange
+        //array which are the gameobjects which the creature can
+        //target.
+        //This task returns false so that it move on to the next
+        //tree but still gets ran every time the BT is repeated
+        //so that if new targets are spawned the creature can target
+        //them if they are close enough
+        public bool CheckTargets()                                  
+        {                                                           
+            objInRange = GameObject.FindGameObjectsWithTag(objtag); 
+            if (objInRange != null)                                 
+            {                                                       
+                return false;                                       
+            }                                                       
+            return false;                                           
+        }                                                           
+
         [Task]
-        public void CheckNearestTarget()                                                            //Uses a forloop to go thru the
-        {                                                                                           //gameobject array (objInRange)
-            for(int i = 0; i < objInRange.Length; i++)                                              //and check the distances of each
-            {                                                                                       //one of them and if they are closer
-                go = objInRange[i];                                                                 //than the previous gameobject 
-                float distToCurrObj = Vector3.Distance(go.transform.position, transform.position);  //it will be set as the new closest
-                if(distToCurrObj < distToClosestGo)                                                 //gameobject which is the new target
-                {                                                                                   //of the creature.
-                    distToClosestGo = distToCurrObj;                                                //The task will fail so that it can
-                    closestGO = go;                                                                 //run through on repeat similarly
-                }                                                                                   //to "CheckTargets" so that it is 
-            }                                                                                       //mainly ignored by the BT but will
-            Task.current.Fail();                                                                    //update if there are any targets
+        //Animation floats are set according
+        //to the velocty of the agent so that
+        //the animation fits with the speed
+        //of the creature.
+        //The agent will move to the closest
+        //target when this task is ran and
+        //it will always succeed as there should
+        //be target with the way the BT is setup
+        public void MoveToTarget()                                                         
+        {                                                                                  
+            anim.SetFloat(Move_Y, agent.velocity.magnitude, smoothBlend,Time.deltaTime);   
+            anim.SetFloat(Move_X, agent.angularSpeed, smoothBlend,Time.deltaTime);         
+            agent.SetDestination(closestGO.transform.position);                            
+            Task.current.Succeed();                                                        
+        }                                                                                  
+                                                                                           
+        [Task]
+        //Uses a forloop to go thru the
+        //gameobject array (objInRange)
+        //and check the distances of each
+        //one of them and if they are closer
+        //than the previous gameobject 
+        //it will be set as the new closest
+        //gameobject which is the new target
+        //of the creature.
+        //The task will fail so that it can
+        //run through on repeat similarly
+        //to "CheckTargets" so that it is 
+        //mainly ignored by the BT but will
+        //update if there are any targets
+        public void CheckNearestTarget()                                                                 
+        {                                                                                                
+            foreach (GameObject go in objInRange)                                                        
+            {                                                                                            
+                this.go = go;                                                                            
+                float distToCurrObj = Vector3.Distance(this.go.transform.position, transform.position);  
+                if (distToCurrObj < distToClosestGo)                                                     
+                {                                                                                        
+                    distToClosestGo = distToCurrObj;                                                     
+                    closestGO = go;                                                                      
+                }                                                                                        
+            }                                                                                            
+            Task.current.Fail();                                                                         
         }
 
         [Task]
-        public bool IsTargetClose()                                                             //Checks the distance between the
-        {                                                                                       //target and creature and if the
-            float distToCurrObj = Vector3.Distance(go.transform.position, transform.position);  //distance is lesser(within) than
-            distToClosestGo = distToCurrObj;                                                    //the seek range it returns the 
-            if (distToClosestGo <= seekRange)                                                   //task as true which in the BT will
-            {                                                                                   //follow up into "MoveToTarget" 
-                return true;                                                                    //and the creature will towards the
-            }                                                                                   //target gameobject
+        //Checks the distance between the
+        //target and creature and if the
+        //distance is lesser(within) than
+        //the seek range it returns the 
+        //task as true which in the BT will
+        //follow up into "MoveToTarget" 
+        //and the creature will towards the
+        //target gameobject
+        public bool IsTargetClose()                                                             
+        {                                                                                       
+            float distToCurrObj = Vector3.Distance(go.transform.position, transform.position);  
+            distToClosestGo = distToCurrObj;                                                    
+            if (distToClosestGo <= seekRange)                                                   
+            {                                                                                   
+                return true;                                                                    
+            }                                                                                   
             return false;                                                                       
         }                                                                                       
 
         [Task]
-        public bool CloseToAttack()                                                            //Check the distance between the 
-        {                                                                                      //target and the creature and if
-            float distToCurrObj = Vector3.Distance(go.transform.position, transform.position); //the distance between them is
-            distToClosestGo = distToCurrObj;                                                   //lesser(within) than the attack
-            if (distToClosestGo <= attackRange)                                                //range of the creature, task will
-            {                                                                                  //succeed and move on the "Attack"
-                agent.ResetPath();                                                             //Task to attack its target
+        //Check the distance between the 
+        //target and the creature and if
+        //the distance between them is
+        //lesser(within) than the attack
+        //range of the creature, task will
+        //succeed and move on the "Attack"
+        //Task to attack its target
+        public bool CloseToAttack()                                                            
+        {                                                                                      
+            float distToCurrObj = Vector3.Distance(go.transform.position, transform.position); 
+            distToClosestGo = distToCurrObj;                                                   
+            if (distToClosestGo <= attackRange)                                                
+            {                                                                                  
+                agent.ResetPath();                                                             
                 return true;                                                                   
             }                                                                                  
             return false;                                                                      
         }                                                                                      
 
         [Task]
-        public void Attack()                                               //Setting the animation floats to 0 and blending
-        {                                                                  //the animtion to smooth out the creature stopping
-            anim.SetFloat(Move_Y, 0, smoothBlend, Time.deltaTime);         //and the StabAttack animation will play which
-            anim.SetFloat(Move_X, 0, smoothBlend, Time.deltaTime);         //will trigger the animation events which will active
-            anim.SetTrigger(StabAttack);                                   //the damage box in front of the creature and damage
-            Task.current.Succeed();                                        //the character type in front of it
+        //Setting the animation floats to 0 and blending
+        //the animtion to smooth out the creature stopping
+        //and the StabAttack animation will play which
+        //will trigger the animation events which will active
+        //the damage box in front of the creature and damage
+        //the character type in front of it
+        public void Attack()                                               
+        {                                                                  
+            anim.SetFloat(Move_Y, 0, smoothBlend, Time.deltaTime);         
+            anim.SetFloat(Move_X, 0, smoothBlend, Time.deltaTime);         
+            anim.SetTrigger(StabAttack);                                   
+            Task.current.Succeed();                                        
         }                                                                  
 
         [Task]
-        public bool IsHit()         //A simple check to see if the creature can be hit
-        {                           //which take the isHit boolean as its return,
-            return isHit;           //as the isHit is changed in other tasks and methods
+        //A simple check to see if the creature can be hit
+        //which take the isHit boolean as its return,
+        //as the isHit is changed in other tasks and methods
+        public bool IsHit()         
+        {                           
+            return isHit;           
         }                           
 
         [Task]
+        //When the Damaged Task is run remove health of
+        //the creature and then succeed the task s
         public void Damaged()                
         {                                    
-            prevHealth = currHealth;         //When the Damaged Task is run remove health of
-            currHealth -= 50f;               //the creature and then succeed the task 
+            prevHealth = currHealth;         
+            currHealth -= 50f;               
             Task.current.Succeed();          
         }                                    
 
         [Task]
+        //Task checks if the creature is dead by 
+        //checking the health is 0 or lesser and if it
+        //is show the death animation and destory
+        //the gameobject
+        //Return as true if it is dead and if not false
+        //and the task is failed and moves on
         public bool IsDead()                    
         {                                       
             if (currHealth <= 0)
-            {                                   //Task checks if the creature is dead by 
-                anim.SetBool(Dead, true);       //checking the health is 0 or lesser and if it
-                Destroy(gameObject);            //is show the death animation and destory
-                return true;                    //the gameobject
-            }                                   //Return as true if it is dead and if not false
-            return false;                       //and the task is failed and moves on
+            {                                   
+                anim.SetBool(Dead, true);       
+                Destroy(gameObject);            
+                return true;                    
+            }                                   
+            return false;                       
         }
         #endregion
-
 
         #region Methods/Functions
         public void EnableStabHitbox()          
