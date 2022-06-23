@@ -30,6 +30,7 @@
 
 using UnityEngine;
 
+
 public class DestroyAfterAWhile : MonoBehaviour
 {
     public float lifeTime;

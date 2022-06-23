@@ -1,6 +1,8 @@
 using System;
 using UnityEngine;
 
+//This class is timer that takes in a function and a time
+//and then runs the function after that time has finished counting down
 public class FunctionTimer
 {
     private Action action;

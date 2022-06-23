@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace RayWenderlich.Unity.StatePatternInUnity
 {
+    //This class is used to take in animation events from the stab attack
+    //animation, which is used to turn on and off the collider of the damage
+    //box of the creature
     public class CreatureAnimationEvents : MonoBehaviour
     {
         private NPC_Creature creature;
