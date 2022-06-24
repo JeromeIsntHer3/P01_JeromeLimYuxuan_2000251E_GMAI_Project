@@ -4,10 +4,14 @@ using UnityEngine;
 
 namespace RayWenderlich.Unity.StatePatternInUnity
 {
-    public class SeekState : GeneralNPCState
+    //The Seek State transitions from Idle, Patrol and Damaged State.
+    //Transitions from Idle state if the player is within the seek range of the enemy npc
+    //Transition from Patrol State if the player is within the seek range of the enemy npc
+    //Transitions from the Damaged State if it was the previous state and the enemy npc had been damaged
+    public class EnemyNPCSeekState : EnemyNPCGeneralState
     {
         private float speed = 5f;
-        public SeekState(NPC npc, NPCStateMachine stateMachine) : base(npc, stateMachine) { }
+        public EnemyNPCSeekState(NPC npc, NPCStateMachine stateMachine) : base(npc, stateMachine) { }
 
         public override void Enter()
         {

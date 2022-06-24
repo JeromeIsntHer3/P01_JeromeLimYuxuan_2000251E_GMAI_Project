@@ -56,6 +56,7 @@ namespace RayWenderlich.Unity.StatePatternInUnity
             {
                 character.TriggerAnimation(landParam);
                 SoundManager.Instance.PlaySound(SoundManager.Instance.landing);
+                //Return to the previous state that the character was in
                 stateMachine.ChangeState(stateMachine.PrevState);
             }
         }

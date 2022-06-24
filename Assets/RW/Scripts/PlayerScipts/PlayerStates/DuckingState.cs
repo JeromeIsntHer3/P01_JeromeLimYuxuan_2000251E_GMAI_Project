@@ -32,6 +32,9 @@ using UnityEngine;
 
 namespace RayWenderlich.Unity.StatePatternInUnity
 {
+    //Ducking State transitions between Drawn and Sheath State
+    //Transition from both states occurs when the the player decides
+    //to input the crouching button
     public class DuckingState : GroundedState
     {
         private bool belowCeiling;
@@ -66,6 +69,9 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         public override void LogicUpdate()
         {
             base.LogicUpdate();
+            //if the player is not underneath a collidable ceiling or the player
+            //has stopped holding the crouch button, the character will transition
+            //back to the previous state
             if (!(crouchHeld || belowCeiling))
             {
                 stateMachine.ChangeState(stateMachine.PrevState);

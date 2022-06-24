@@ -6,9 +6,9 @@ namespace RayWenderlich.Unity.StatePatternInUnity
 {
     //Damaged State is a state that gets transition into from any another state if the enemy npc is damaged which
     //will transition back to any previous state
-    public class DamagedState : NPCState
+    public class EnemyNPCDamagedState : NPCState
     {
-        public DamagedState(NPC npc, NPCStateMachine stateMachine) : base(npc, stateMachine) { }
+        public EnemyNPCDamagedState(NPC npc, NPCStateMachine stateMachine) : base(npc, stateMachine) { }
 
         public override void Enter()
         {
@@ -22,8 +22,8 @@ namespace RayWenderlich.Unity.StatePatternInUnity
             {
                 npc.SetAnimationBool(npc.isDead, true);
             }
-            //Set the npc is hit to false as it has just been hit
-            //Damaged so that it can be damaged once exiting out from this state
+            //Set the npc is hit to false as it has just been Damaged so that
+            //it can be damaged again once exiting out from this state
             npc.isHit = false;
         }
 

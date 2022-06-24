@@ -231,11 +231,12 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         {
             hitBox.enabled = false;
         }
+        //Method to enable the hitbox of this character
         public void ActivateSwordHitBox()
         {
             damageBox.enabled = true;
         }
-
+        //Method to disable the hitbox of this character
         public void DisableSwordHitBox()
         {
             damageBox.enabled = false;
@@ -253,6 +254,8 @@ namespace RayWenderlich.Unity.StatePatternInUnity
             currentWeapon.transform.localRotation = Quaternion.identity;
         }
 
+        //Function that will damage the character that is
+        //called and ran from the child hitbox script
         public void Damage()
         {
             if (currHealth > 0 && canBeDamaged)

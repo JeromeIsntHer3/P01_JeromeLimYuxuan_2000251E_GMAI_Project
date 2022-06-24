@@ -32,6 +32,7 @@ using UnityEngine;
 
 namespace RayWenderlich.Unity.StatePatternInUnity
 {
+    //Standing State does not transition between other states
     public class StandingState : GroundedState
     {
         protected bool jump;

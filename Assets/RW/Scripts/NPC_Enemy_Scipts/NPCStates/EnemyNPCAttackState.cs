@@ -5,7 +5,9 @@ using UnityEngine;
 namespace RayWenderlich.Unity.StatePatternInUnity
 {
     //Attack State derives from GeneralNPCState and transitions to/from DamagedState and SeekState
-    public class AttackState : GeneralNPCState
+    //It transitions from Seek State if the player is within the seek range of the enemy npc
+    //It transitions from Damaged State after the stun timer is over
+    public class EnemyNPCAttackState : EnemyNPCGeneralState
     {
         //To Check if the NPC is able to attack
         private bool canAttackAgain;
@@ -14,7 +16,7 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         //To hold a new function timer
         private FunctionTimer ft;
 
-        public AttackState(NPC npc, NPCStateMachine stateMachine) : base(npc, stateMachine) { }
+        public EnemyNPCAttackState(NPC npc, NPCStateMachine stateMachine) : base(npc, stateMachine) { }
 
         public override void Enter()
         {

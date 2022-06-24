@@ -8,6 +8,10 @@ namespace RayWenderlich.Unity.StatePatternInUnity
     {
         #region Variables
 
+        //An enum is set to how this enemy npc will behave
+        //Idle means that it will remain where it stands until the player is within its seek range
+        //Patrol means that at a random interval, it will move around the level randomly
+        //with a max distance of 20 Units
         public enum NPCType
         {
             Patrol,Idle
@@ -21,11 +25,11 @@ namespace RayWenderlich.Unity.StatePatternInUnity
 
         //state variables
         public NPCStateMachine mainMachine;
-        public IdleState idle;
-        public SeekState seek;
-        public PatrolState patrol;
-        public AttackState attack;
-        public DamagedState damaged;
+        public EnemyNPCIdleState idle;
+        public EnemyNPCSeekState seek;
+        public EnemyNPCPatrolState patrol;
+        public EnemyNPCAttackState attack;
+        public EnemyNPCDamagedState damaged;
 
 #pragma warning disable 0649
         [SerializeField]
@@ -192,6 +196,8 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         void Awake()
         {
             agent = GetComponent<NavMeshAgent>();
+            //set the current health according to the scriptableobject
+            //attached to this enemy npc
             currHealth = Health;
         }
 
@@ -199,15 +205,15 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         {
             mainMachine = new NPCStateMachine();
 
-            idle = new IdleState(this,mainMachine);
+            idle = new EnemyNPCIdleState(this,mainMachine);
 
-            seek = new SeekState(this, mainMachine);
+            seek = new EnemyNPCSeekState(this, mainMachine);
 
-            patrol = new PatrolState(this, mainMachine);
+            patrol = new EnemyNPCPatrolState(this, mainMachine);
 
-            attack = new AttackState(this, mainMachine);
+            attack = new EnemyNPCAttackState(this, mainMachine);
 
-            damaged = new DamagedState(this, mainMachine); 
+            damaged = new EnemyNPCDamagedState(this, mainMachine); 
 
             mainMachine.Initialize(idle);
 

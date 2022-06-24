@@ -32,25 +32,29 @@ using UnityEngine;
 
 namespace RayWenderlich.Unity.StatePatternInUnity
 {
+    //Grounded State does not move around but it is used by other states to keep track
+    //of movement input by the player and if the character in those states can be moved
     public class GroundedState : PlayerState
     {
         protected float speed;
         protected float rotationSpeed;
+        //To check whther or not the player can attack
         protected bool canAttack;
 
         private float horizontalInput;
         private float verticalInput;
+        //To hold a new timer
         private FunctionTimer ft;
 
-        public GroundedState(Character character, PlayerStateMachine stateMachine) : base(character, stateMachine)
-        {
-        }
+        public GroundedState(Character character, PlayerStateMachine stateMachine) : base(character, stateMachine) {}
 
         public override void Enter()
         {
             base.Enter();
             DisplayOnUI(UIManager.Alignment.Left);
             horizontalInput = verticalInput = 0.0f;
+            //timer is created with a delay to prevent the character
+            //from being damaged again
             ft = new FunctionTimer(CanBeDamaged, 3f);
         }
 
@@ -70,10 +74,13 @@ namespace RayWenderlich.Unity.StatePatternInUnity
         public override void LogicUpdate()
         {
             base.LogicUpdate();
+            //If the character lost any health and it is hit
+            //transition to the damage state
             if (character.currHealth < character.prevHealth && character.isHit)
             {
                 stateMachine.ChangeState(character.damage);
             }
+            //Run the function timer
             ft.Update();
         }
 
@@ -83,6 +90,9 @@ namespace RayWenderlich.Unity.StatePatternInUnity
             character.Move(verticalInput * speed, horizontalInput * rotationSpeed);
         }
 
+        //Taken in by the function timer and set
+        //the player to be able to be damaged after 
+        //countdwon is over
         void CanBeDamaged()
         {
             character.canBeDamaged = true;
